@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -24,13 +26,8 @@ export default function Component() {
 
   const createDraft = async () => {
     const draft = await createDraftAction({
-      name: "test",
-      options: [
-        // {
-        //   name: "test",
-        //   image: "test",
-        // },
-      ],
+      name: draftName,
+      options: draftOptions.filter((op) => op.name != ""),
     });
     console.log(draft);
   };
@@ -74,13 +71,13 @@ export default function Component() {
   return (
     <main
       key="1"
-      className="flex flex-col lg:flex-row items-start justify-center min-h-screen py-20"
+      className="flex flex-col lg:flex-row items-center min-h-screen py-20"
     >
       <section className="w-full max-w-xl space-y-6">
         <h1 className="text-2xl font-bold mb-4">Create New Draft</h1>
         <form className="w-full space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="draft-name">Draft/Game Name</Label>
+            <Label htmlFor="draft-name">Draft Name</Label>
             <Input
               id="draft-name"
               placeholder="Enter name"
@@ -90,7 +87,7 @@ export default function Component() {
           </div>
         </form>
         <h2 className="col-span-full text-xl font-bold mb-4">Draft Options</h2>
-        <div className="w-full lg:w-full max-w-4xl mt-8 lg:mt-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-8">
+        <div className="w-full lg:w-full max-w-4xl mt-8 lg:mt-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-8">
           {draftOptions
             .filter((op) => op.name != "")
             .map((option) => (
@@ -144,15 +141,13 @@ export default function Component() {
           )}
 
           {!isEditingOption && (
-            <Card className="flex flex-col items-center p-4 border-2 border-dotted border-gray-300">
-              <Button
-                className="w-full h-full"
-                type="button"
-                onClick={createNewOption}
-              >
-                Add Option
-              </Button>
-            </Card>
+            <Button
+              className="w-full h-full border-2 border-dotted border-gray-300"
+              type="button"
+              onClick={createNewOption}
+            >
+              Add Option
+            </Button>
           )}
         </div>
         <Button

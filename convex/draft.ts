@@ -15,10 +15,14 @@ export const createDraft = action({
   },
   handler: async (ctx, args) => {
     // Can happen in background
-    args.options.forEach(async (option) => {
-      const imageBlob = new Blob([option.image]);
-      ctx.storage.store(imageBlob);
-    });
+    const draftOptions = await Promise.all(
+      args.options.map(async (option) => {
+        const imageBlob = new Blob([option.image]);
+        return ctx.storage.store(imageBlob);
+      })
+    );
+
+    console.log(draftOptions);
 
     const data: Id<"drafts"> = await ctx.runMutation(
       internal.draft.createDraftMutation,
