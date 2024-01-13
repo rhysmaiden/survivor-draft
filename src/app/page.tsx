@@ -1,10 +1,10 @@
-"use client";
-
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useAction } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 type DraftOption = {
   name: string;
@@ -12,12 +12,28 @@ type DraftOption = {
 };
 
 export default function Component() {
+  const [draftName, setDraftName] = useState("");
   const [draftOptions, setDraftOptions] = useState<DraftOption[]>([]);
   const [optionName, setOptionName] = useState("");
   const [optionImage, setOptionImage] = useState<string>("");
   const [isEditingOption, setIsEditingOption] = useState(false);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const createDraftAction = useAction(api.draft.createDraft);
+
+  const createDraft = async () => {
+    const draft = await createDraftAction({
+      name: "test",
+      options: [
+        // {
+        //   name: "test",
+        //   image: "test",
+        // },
+      ],
+    });
+    console.log(draft);
+  };
 
   const createNewOption = () => {
     setIsEditingOption(true);
@@ -65,7 +81,12 @@ export default function Component() {
         <form className="w-full space-y-6">
           <div className="space-y-2">
             <Label htmlFor="draft-name">Draft/Game Name</Label>
-            <Input id="draft-name" placeholder="Enter name" required />
+            <Input
+              id="draft-name"
+              placeholder="Enter name"
+              required
+              onChange={(e) => setDraftName(e.target.value)}
+            />
           </div>
         </form>
         <h2 className="col-span-full text-xl font-bold mb-4">Draft Options</h2>
@@ -139,6 +160,7 @@ export default function Component() {
           type="submit"
           size={"lg"}
           variant={"outline"}
+          onClick={createDraft}
         >
           Create Draft
         </Button>
