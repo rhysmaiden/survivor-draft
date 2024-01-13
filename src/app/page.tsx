@@ -73,7 +73,10 @@ export default function Component() {
           {draftOptions
             .filter((op) => op.name != "")
             .map((option) => (
-              <Card className="flex flex-col items-center p-4">
+              <Card
+                className="flex flex-col items-center p-4"
+                key={option.name}
+              >
                 <img
                   alt="Option Image"
                   className="w-full h-24 object-cover mb-2"
@@ -140,7 +143,7 @@ export default function Component() {
           Create Draft
         </Button>
         <p className="text-sm  mt-4">
-          After creating the draft \, a link will be generated for you to share
+          After creating the draft, a link will be generated for you to share
           with others.
         </p>
       </section>
