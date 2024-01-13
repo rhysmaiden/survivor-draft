@@ -131,12 +131,17 @@ export default function Component() {
             </Card>
           )}
         </div>
-        <Button className="w-full mt-8" type="submit">
-          Create Draft/Game
+        <Button
+          className="w-full mt-8"
+          type="submit"
+          size={"lg"}
+          variant={"outline"}
+        >
+          Create Draft
         </Button>
-        <p className="text-sm text-gray-500 mt-4">
-          After creating the draft/game, a link will be generated for you to
-          share with others.
+        <p className="text-sm  mt-4">
+          After creating the draft \, a link will be generated for you to share
+          with others.
         </p>
       </section>
     </main>
