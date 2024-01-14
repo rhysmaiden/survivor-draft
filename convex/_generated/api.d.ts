@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as draft from "../draft.js";
+import type * as image from "../image.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,6 +27,7 @@ import type * as draft from "../draft.js";
  */
 declare const fullApi: ApiFromModules<{
   draft: typeof draft;
+  image: typeof image;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

@@ -5,38 +5,53 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useAction } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { useRouter } from "next/navigation";
+import { Id } from "../../convex/_generated/dataModel";
 
 type DraftOption = {
   name: string;
-  image: string;
+  image?: Image;
+};
+
+type Image = {
+  url: string;
+  imageStorageId?: Id<"_storage">;
 };
 
 export default function Component() {
   const [draftName, setDraftName] = useState("");
   const [draftOptions, setDraftOptions] = useState<DraftOption[]>([]);
   const [optionName, setOptionName] = useState("");
-  const [optionImage, setOptionImage] = useState<string>("");
+  const [optionImage, setOptionImage] = useState<Image | null>(null);
   const [isEditingOption, setIsEditingOption] = useState(false);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
-  const createDraftAction = useAction(api.draft.createDraft);
+  const generateImageUploadUrl = useMutation(api.image.generateUploadUrl);
+
+  const createDraftMutation = useMutation(api.draft.createDraft);
 
   const createDraft = async () => {
-    const draft = await createDraftAction({
+    const draftId = await createDraftMutation({
       name: draftName,
-      options: draftOptions.filter((op) => op.name != ""),
+      options: draftOptions
+        .filter((op) => op.name !== "")
+        .map((op) => ({
+          name: op.name,
+          imageStorageId: op.image?.imageStorageId,
+        })),
     });
-    console.log(draft);
+    // router.push(`/draft/${draftId}`);
   };
 
   const createNewOption = () => {
     setIsEditingOption(true);
     draftOptions.push({
       name: "",
-      image: "",
+      image: undefined,
     });
   };
 
@@ -60,12 +75,26 @@ export default function Component() {
     setIsEditingOption(false);
   };
 
-  const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
       return;
     }
     const blob = e.target.files[0];
-    setOptionImage(URL.createObjectURL(blob));
+
+    const uploadUrl = await generateImageUploadUrl();
+
+    const result = await fetch(uploadUrl, {
+      method: "POST",
+      headers: { "Content-Type": blob!.type },
+      body: blob,
+    });
+
+    const { storageId } = await result.json();
+
+    setOptionImage({
+      url: URL.createObjectURL(blob),
+      imageStorageId: storageId,
+    });
   };
 
   return (
@@ -99,7 +128,7 @@ export default function Component() {
                   alt="Option Image"
                   className="w-full h-24 object-cover mb-2"
                   height="150"
-                  src={option.image}
+                  src={option.image?.url || ""}
                   style={{
                     aspectRatio: "150/150",
                     objectFit: "cover",
