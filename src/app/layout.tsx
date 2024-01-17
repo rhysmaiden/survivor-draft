@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import ConvexClientProvider from "./ConvexClientProvider";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import RecentDraftsNav from "./components/RecentDraftsNav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +22,38 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ConvexClientProvider>{children}</ConvexClientProvider>
+        <ClerkProvider publishableKey="pk_test_b3JpZW50ZWQtaHVtcGJhY2stMjMuY2xlcmsuYWNjb3VudHMuZGV2JA">
+          <ConvexClientProvider>
+            <div key="1" className="flex flex-col min-h-screen">
+              <header className="flex items-center justify-between p-4 bg-gray-800 text-white">
+                <Link className="flex items-center gap-2" href="/">
+                  <span className="text-lg font-semibold">Draft</span>
+                </Link>
+                <Button
+                  className="rounded-full border border-gray-200 w-8 h-8"
+                  size="icon"
+                  variant="outline"
+                >
+                  <img
+                    alt="Avatar"
+                    className="rounded-full"
+                    height="32"
+                    src="/placeholder.svg"
+                    style={{
+                      aspectRatio: "32/32",
+                      objectFit: "cover",
+                    }}
+                    width="32"
+                  />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </header>
+              <div className="flex flex-1 overflow-hidden ">
+                <main className="w-full">{children}</main>
+              </div>
+            </div>
+          </ConvexClientProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

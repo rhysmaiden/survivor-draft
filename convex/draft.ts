@@ -28,6 +28,13 @@ export const getDraft = query({
   },
 });
 
+export const getDrafts = query({
+  handler: async (ctx) => {
+    const drafts = await ctx.db.query("drafts").collect();
+    return drafts;
+  },
+});
+
 export const createDraft = mutation({
   args: {
     name: v.string(),
@@ -53,7 +60,73 @@ export const createDraft = mutation({
       name: args.name,
       options: draftOptionIds,
       players: [],
+      gameState: {
+        status: "PENDING",
+        picks: [],
+      },
     });
     return draft;
+  },
+});
+
+export const joinDraft = mutation({
+  args: {
+    draftId: v.id("drafts"),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+
+    if (!user) return null;
+
+    const draft = await ctx.db.get(args.draftId);
+
+    const existingPlayers = draft?.players || []; // Initialize as an empty array if undefined
+
+    ctx.db.patch(args.draftId, {
+      players: [
+        ...existingPlayers,
+        { id: user.subject, name: user.givenName! },
+      ],
+    });
+
+    return null; // Add a return statement
+  },
+});
+
+export const selectOption = mutation({
+  args: {
+    draftId: v.id("drafts"),
+    optionId: v.id("draftOptions"),
+  },
+  handler: async (
+    ctx,
+    args: { draftId: Id<"drafts">; optionId: Id<"draftOptions"> }
+  ) => {
+    const user = await ctx.auth.getUserIdentity();
+
+    if (!user) return null;
+
+    const draft = await ctx.db.get(args.draftId);
+
+    if (!draft || !draft.gameState) return;
+
+    const { gameState } = draft;
+
+    const currentPlayerIndex = draft.players.findIndex((p) => user.subject);
+    const playersInGame = draft.players.length;
+
+    const nextPlayerIndex =
+      currentPlayerIndex + 1 >= playersInGame ? 0 : currentPlayerIndex + 1;
+
+    ctx.db.patch(args.draftId, {
+      gameState: {
+        ...gameState,
+        picks: [
+          ...(gameState?.picks || []),
+          { option: args.optionId, playerId: user.subject },
+        ],
+        playerTurnId: draft.players[nextPlayerIndex].id,
+      },
+    });
   },
 });
