@@ -12,7 +12,7 @@ export default function HomePage() {
         <h1 className="text-4xl font-bold text-white">Draft Game</h1>
         <p className="mt-2 text-center  text-white max-w-md">
           Welcome to Draft Game! A fun and interactive game where you can create
-          your own game or join an existing one. Let's get started!
+          your own game or join an existing one. Let&apos;s get started!
         </p>
         <div className="mt-10">
           <Link

@@ -10,11 +10,11 @@ import { useState } from "react";
 
 export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
   const draftId = props.draftId;
-  if (draftId == null) return <div>Invalid Draft ID</div>;
 
   const draft = useQuery(api.draft.getDraft, {
     id: draftId,
   });
+
   const joinDraftMutation = useMutation(api.draft.joinDraft);
   const selectOptionMutation = useMutation(api.draft.selectOption);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
@@ -23,6 +23,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
 
   const { user } = useUser();
 
+  if (draftId == null) return <div>Invalid Draft ID</div>;
   if (!draft) return <div>Loading...</div>;
   const { draftOptions, players, gameState } = draft;
 
@@ -98,7 +99,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
         <div className="grid grid-cols-12 gap-2 md:w-2/3 w-full">
           <div className="col-span-1"></div>
           {players.map((player) => (
-            <div className="rounded-lg col-span-2">
+            <div className="rounded-lg col-span-2" key={player.id}>
               <h2
                 className={`text-lg mb-4 text-center ${
                   player.id == gameState.playerTurnId &&
