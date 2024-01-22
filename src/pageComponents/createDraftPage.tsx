@@ -73,6 +73,7 @@ export default function CreateDraftPage() {
     setOptionName("");
     imageInputRef.current?.value && (imageInputRef.current.value = "");
     setIsEditingOption(false);
+    setOptionImage(null);
   };
 
   const onImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
