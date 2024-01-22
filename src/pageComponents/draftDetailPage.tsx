@@ -16,6 +16,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
   });
 
   const joinDraftMutation = useMutation(api.draft.joinDraft);
+  const beginDraftMutation = useMutation(api.draft.beginDraft);
   const selectOptionMutation = useMutation(api.draft.selectOption);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
     null
@@ -31,6 +32,10 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
 
   const joinDraft = async () => {
     await joinDraftMutation({ draftId: draftId });
+  };
+
+  const beginDraft = async () => {
+    await beginDraftMutation({ draftId: draftId });
   };
 
   const confirmSelection = async () => {
@@ -55,7 +60,12 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
 
   return (
     <div className="p-6">
-      {!isUserInDraft && <Button onClick={joinDraft}>Join Draft</Button>}
+      {!isUserInDraft && gameState.status == "PENDING" && (
+        <Button onClick={joinDraft}>Join Draft</Button>
+      )}
+      {gameState.status == "PENDING" && (
+        <Button onClick={beginDraft}>Begin Draft</Button>
+      )}
       <div className="text-4xl mb-4">{draft?.name}</div>
       <div className="mx-auto flex md:flex-row flex-col-reverse gap-2">
         <div className="rounded-lg md:w-1/3 w-full">

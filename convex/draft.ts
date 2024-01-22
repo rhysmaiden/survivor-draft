@@ -1,7 +1,7 @@
-import { action, internalMutation, mutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
-import { internal } from "./_generated/api";
+import { getRandomInt } from "./mathUtils";
 
 export const getDraft = query({
   args: {
@@ -87,6 +87,33 @@ export const joinDraft = mutation({
         ...existingPlayers,
         { id: user.subject, name: user.givenName ?? user.subject.slice(0, 9) },
       ],
+    });
+
+    return null; // Add a return statement
+  },
+});
+
+export const beginDraft = mutation({
+  args: {
+    draftId: v.id("drafts"),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+
+    if (!user) return null;
+
+    const draft = await ctx.db.get(args.draftId);
+
+    const gameState = draft?.gameState;
+
+    if (!gameState) return;
+
+    gameState.status = "IN_PROGRESS";
+    gameState.playerTurnId =
+      draft.players[getRandomInt(0, draft.players.length - 1)].id;
+
+    ctx.db.patch(args.draftId, {
+      gameState,
     });
 
     return null; // Add a return statement
