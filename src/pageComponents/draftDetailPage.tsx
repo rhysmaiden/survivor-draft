@@ -58,15 +58,33 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
       : false
   );
 
+  let subheading;
+  if (gameState.status == "PENDING") {
+    subheading = "Wait for players to join...";
+  } else if (gameState.status == "IN_PROGRESS") {
+    subheading = "In Progress...";
+  } else {
+    subheading = "Draft Complete";
+  }
+
   return (
     <div className="p-6">
-      {!isUserInDraft && gameState.status == "PENDING" && (
-        <Button onClick={joinDraft}>Join Draft</Button>
-      )}
-      {gameState.status == "PENDING" && (
-        <Button onClick={beginDraft}>Begin Draft</Button>
-      )}
-      <div className="text-4xl mb-4">{draft?.name}</div>
+      <div className="mb-4">
+        <div className="text-4xl ">{draft?.name}</div>
+        <div className="text-sm text-gray-400">{subheading}</div>
+      </div>
+      <div className="mb-4 flex gap-2">
+        {!isUserInDraft && gameState.status == "PENDING" && (
+          <Button size={"lg"} variant={"outline"} onClick={joinDraft}>
+            Join Draft
+          </Button>
+        )}
+        {gameState.status == "PENDING" && (
+          <Button size={"lg"} variant={"outline"} onClick={beginDraft}>
+            Begin Draft
+          </Button>
+        )}
+      </div>
       <div className="mx-auto flex md:flex-row flex-col-reverse gap-2">
         <div className="rounded-lg md:w-1/3 w-full">
           <h2 className="text-lg font-semibold mb-4">

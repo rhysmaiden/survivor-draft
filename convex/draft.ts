@@ -46,6 +46,9 @@ export const createDraft = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user) return null;
+
     const draftOptionIds = await Promise.all(
       args.options.map(async (option) => {
         const optionId = await ctx.db.insert("draftOptions", {
@@ -64,6 +67,7 @@ export const createDraft = mutation({
         status: "PENDING",
         picks: [],
       },
+      owner: user.subject,
     });
     return draft;
   },
