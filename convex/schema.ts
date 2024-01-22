@@ -13,7 +13,7 @@ export default defineSchema({
         v.object({ option: v.id("draftOptions"), playerId: v.string() })
       ),
     }),
-    owner: v.optional(v.string()),
+    owner: v.string(),
   }),
   draftOptions: defineTable({
     name: v.string(),
