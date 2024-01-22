@@ -79,7 +79,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
             Join Draft
           </Button>
         )}
-        {gameState.status == "PENDING" && (
+        {user && user.id == draft.owner && gameState.status == "PENDING" && (
           <Button size={"lg"} variant={"outline"} onClick={beginDraft}>
             Begin Draft
           </Button>
