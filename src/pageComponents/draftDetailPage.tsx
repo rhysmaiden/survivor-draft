@@ -110,8 +110,8 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
             Confirm Selection
           </Button>
         </div>
-        <div className="grid grid-cols-12 gap-2 md:w-2/3 w-full">
-          <div className="col-span-1"></div>
+        <div className="grid grid-cols-6 md:grid-cols-12 gap-2 md:w-2/3 w-full">
+          <div className="col-span-1 hidden md:block"></div>
           {players.map((player) => (
             <div className="rounded-lg col-span-2" key={player.id}>
               <h2
@@ -156,7 +156,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
               </div>
             </div>
           ))}
-          <div className="col-span-1"></div>
+          <div className="col-span-1 hidden md:block"></div>
         </div>
       </div>
     </div>
