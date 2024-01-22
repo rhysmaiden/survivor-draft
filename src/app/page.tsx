@@ -1,10 +1,8 @@
 "use client";
 
-import HomePage from "@/pages/homePage";
+import HomePage from "@/pageComponents/homePage";
 import React from "react";
 
-const Page: React.FC = () => {
+export default function Page() {
   return <HomePage />;
-};
-
-export default Page;
+}

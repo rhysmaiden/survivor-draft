@@ -1,4 +1,6 @@
-import CreateDraftPage from "@/pages/createDraftPage";
+"use client";
+
+import CreateDraftPage from "@/pageComponents/createDraftPage";
 import React from "react";
 
 const Page: React.FC = () => {

@@ -1,4 +1,6 @@
-import DraftDetailPage from "@/pages/draftDetailPage";
+"use client";
+
+import DraftDetailPage from "@/pageComponents/draftDetailPage";
 import React from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 
