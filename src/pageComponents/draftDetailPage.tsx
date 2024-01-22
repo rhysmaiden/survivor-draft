@@ -79,7 +79,11 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
                   index == selectedOptionIndex && "border-orange-500"
                 }`}
                 key={option.name}
-                onClick={() => setSelectedOptionIndex(index)}
+                onClick={() =>
+                  user &&
+                  gameState.playerTurnId == user.id &&
+                  setSelectedOptionIndex(index)
+                }
               >
                 <img
                   alt="Option Image"
