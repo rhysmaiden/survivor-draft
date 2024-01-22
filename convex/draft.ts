@@ -85,7 +85,7 @@ export const joinDraft = mutation({
     ctx.db.patch(args.draftId, {
       players: [
         ...existingPlayers,
-        { id: user.subject, name: user.givenName! },
+        { id: user.subject, name: user.givenName ?? user.subject.slice(0, 9) },
       ],
     });
 
