@@ -6,10 +6,15 @@ import { Card } from "@/components/ui/card";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { RedirectToSignIn, SignedOut } from "@clerk/nextjs";
+import { useSearchParams } from "next/navigation";
 
 export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
-  const draftId = props.draftId;
+  const { draftId } = props;
+  const searchParams = useSearchParams();
+
+  const join = searchParams.get("join") ? true : false;
 
   const draft = useQuery(api.draft.getDraft, {
     id: draftId,
@@ -21,8 +26,16 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
     null
   );
+  const [showSignIn, setShowSignIn] = useState(false);
 
   const { user } = useUser();
+
+  useEffect(() => {
+    if (join && user) {
+      console.log("run join mute");
+      joinDraftMutation({ draftId: draftId });
+    }
+  }, [join, user]);
 
   if (draftId == null) return <div>Invalid Draft ID</div>;
   if (!draft) return <div>Loading...</div>;
@@ -31,6 +44,10 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
   const isUserInDraft = user && players.find((p) => p.id == user.id);
 
   const joinDraft = async () => {
+    if (!user) {
+      setShowSignIn(true);
+      return;
+    }
     await joinDraftMutation({ draftId: draftId });
   };
 
@@ -69,6 +86,12 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
 
   return (
     <div className="p-6">
+      {showSignIn && (
+        <SignedOut>
+          <RedirectToSignIn redirectUrl={`/draft/${draftId}?join=true`} />
+        </SignedOut>
+      )}
+
       <div className="mb-4">
         <div className="text-4xl ">{draft?.name}</div>
         <div className="text-sm text-gray-400">{subheading}</div>
