@@ -86,6 +86,11 @@ export const joinDraft = mutation({
 
     const existingPlayers = draft?.players || []; // Initialize as an empty array if undefined
 
+    // Player already in game
+    if (existingPlayers.find((p) => p.id == user.subject)) {
+      return;
+    }
+
     ctx.db.patch(args.draftId, {
       players: [
         ...existingPlayers,
