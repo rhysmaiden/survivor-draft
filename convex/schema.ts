@@ -12,6 +12,7 @@ export default defineSchema({
       picks: v.array(
         v.object({ option: v.id("draftOptions"), playerId: v.string() })
       ),
+      turnDirection: v.optional(v.string()),
     }),
     owner: v.string(),
   }),

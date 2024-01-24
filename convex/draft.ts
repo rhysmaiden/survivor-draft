@@ -118,11 +118,16 @@ export const beginDraft = mutation({
     if (!gameState) return;
 
     gameState.status = "IN_PROGRESS";
-    gameState.playerTurnId =
-      draft.players[getRandomInt(0, draft.players.length - 1)].id;
+    const playersShuffled = draft.players
+      .slice()
+      .sort(() => Math.random() - 0.5);
+
+    gameState.playerTurnId = playersShuffled[0].id;
+    gameState.turnDirection = "RIGHT";
 
     ctx.db.patch(args.draftId, {
       gameState,
+      players: playersShuffled,
     });
 
     return null; // Add a return statement
@@ -151,8 +156,20 @@ export const selectOption = mutation({
     const currentPlayerIndex = draft.players.findIndex((p) => user.subject);
     const playersInGame = draft.players.length;
 
-    const nextPlayerIndex =
-      currentPlayerIndex + 1 >= playersInGame ? 0 : currentPlayerIndex + 1;
+    let nextPlayerIndex = currentPlayerIndex;
+    if (gameState.turnDirection == "RIGHT") {
+      if (currentPlayerIndex == playersInGame - 1) {
+        gameState.turnDirection = "LEFT";
+      } else {
+        nextPlayerIndex = currentPlayerIndex + 1;
+      }
+    } else {
+      if (currentPlayerIndex == 0) {
+        gameState.turnDirection = "RIGHT";
+      } else {
+        nextPlayerIndex = currentPlayerIndex - 1;
+      }
+    }
 
     ctx.db.patch(args.draftId, {
       gameState: {

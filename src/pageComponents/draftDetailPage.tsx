@@ -113,7 +113,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
           <h2 className="text-lg font-semibold mb-4">
             Remaining Draft Options
           </h2>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 lg:grid-cols-4 gap-2">
             {remainingDraftOptions.map((option, index) => (
               <Card
                 className={`flex flex-col items-center p-2 bg-white rounded-xl border-8 aspect-square ${
