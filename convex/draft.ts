@@ -171,6 +171,14 @@ export const selectOption = mutation({
       }
     }
 
+    // Number of turns in game vs number of turns for everyone to have equal players
+    if (
+      gameState.picks.length + 1 >=
+      Math.floor(draft.options.length / playersInGame) * playersInGame
+    ) {
+      gameState.status = "ENDED";
+    }
+
     ctx.db.patch(args.draftId, {
       gameState: {
         ...gameState,

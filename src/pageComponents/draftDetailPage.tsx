@@ -109,48 +109,55 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
         )}
       </div>
       <div className="mx-auto flex md:flex-row flex-col-reverse gap-2">
-        <div className="rounded-lg md:w-1/3 w-full">
-          <h2 className="text-lg font-semibold mb-4">
-            Remaining Draft Options
-          </h2>
-          <div className="grid grid-cols-3 lg:grid-cols-4 gap-2">
-            {remainingDraftOptions.map((option, index) => (
-              <Card
-                className={`flex flex-col items-center p-2 bg-white rounded-xl border-8 aspect-square ${
-                  index == selectedOptionIndex && "border-orange-500"
-                }`}
-                key={option.name}
-                onClick={() =>
-                  user &&
-                  gameState.playerTurnId == user.id &&
-                  setSelectedOptionIndex(index)
-                }
+        {gameState.status != "ENDED" && (
+          <div className="rounded-lg md:w-1/3 w-full">
+            <h2 className="text-lg font-semibold mb-4">
+              Remaining Draft Options
+            </h2>
+            <div className="grid grid-cols-3 lg:grid-cols-4 gap-2">
+              {remainingDraftOptions.map((option, index) => (
+                <Card
+                  className={`flex flex-col items-center p-2 bg-white rounded-xl border-8 aspect-square ${
+                    index == selectedOptionIndex && "border-orange-500"
+                  }`}
+                  key={option.name}
+                  onClick={() =>
+                    user &&
+                    gameState.status == "IN_PROGRESS" &&
+                    gameState.playerTurnId == user.id &&
+                    setSelectedOptionIndex(index)
+                  }
+                >
+                  <img
+                    alt="Option Image"
+                    className="w-full h-24 object-contain mb-2"
+                    height="150"
+                    src={option.imageUrl || "placeholder.svg"}
+                    style={{
+                      aspectRatio: "150/150",
+                      objectFit: "contain",
+                    }}
+                    width="150"
+                  />
+                  <h3 className="text-lg font-bold text-black">
+                    {option.name}
+                  </h3>
+                </Card>
+              ))}
+            </div>
+            {gameState.status == "IN_PROGRESS" && (
+              <Button
+                size={"lg"}
+                variant={"outline"}
+                className={`w-full mt-6`}
+                disabled={selectedOptionIndex == null}
+                onClick={confirmSelection}
               >
-                <img
-                  alt="Option Image"
-                  className="w-full h-24 object-contain mb-2"
-                  height="150"
-                  src={option.imageUrl || "placeholder.svg"}
-                  style={{
-                    aspectRatio: "150/150",
-                    objectFit: "contain",
-                  }}
-                  width="150"
-                />
-                <h3 className="text-lg font-bold text-black">{option.name}</h3>
-              </Card>
-            ))}
+                Confirm Selection
+              </Button>
+            )}
           </div>
-          <Button
-            size={"lg"}
-            variant={"outline"}
-            className={`w-full mt-6`}
-            disabled={selectedOptionIndex == null}
-            onClick={confirmSelection}
-          >
-            Confirm Selection
-          </Button>
-        </div>
+        )}
         <div className="grid grid-cols-6 md:grid-cols-12 gap-2 md:w-2/3 w-full">
           <div className="col-span-1 hidden md:block"></div>
           {players.map((player) => (
