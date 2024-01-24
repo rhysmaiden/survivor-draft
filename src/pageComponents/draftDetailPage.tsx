@@ -98,7 +98,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
   return (
     <>
       <Dialog open={showModal}>
-        <DialogContent className="bg-white rounded-lg shadow-lg max-w-md mx-auto p-6 space-y-4 text-center">
+        <DialogContent className="bg-white rounded-lg shadow-lg max-w-md mx-auto p-6 space-y-4 text-center max-h-full overflow-y-scroll">
           <img
             alt="Placeholder"
             className="mx-auto"
