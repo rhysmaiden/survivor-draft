@@ -19,5 +19,6 @@ export default defineSchema({
   draftOptions: defineTable({
     name: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
+    description: v.optional(v.string()),
   }),
 });
