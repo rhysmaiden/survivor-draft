@@ -110,7 +110,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
             }
             style={{
               aspectRatio: "200/200",
-              objectFit: "cover",
+              objectFit: "contain",
             }}
             width="200"
           />
