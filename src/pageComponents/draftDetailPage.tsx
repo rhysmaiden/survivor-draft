@@ -180,7 +180,6 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
                     key={option.name}
                     onClick={() => {
                       user &&
-                        gameState.status == "IN_PROGRESS" &&
                         gameState.playerTurnId == user.id &&
                         setSelectedOptionIndex(index);
                       setShowModal(true);
