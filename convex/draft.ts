@@ -153,7 +153,9 @@ export const selectOption = mutation({
 
     const { gameState } = draft;
 
-    const currentPlayerIndex = draft.players.findIndex((p) => user.subject);
+    const currentPlayerIndex = draft.players.findIndex(
+      (p) => p.id == user.subject
+    );
     const playersInGame = draft.players.length;
 
     let nextPlayerIndex = currentPlayerIndex;
