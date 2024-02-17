@@ -42,7 +42,6 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
 
   useEffect(() => {
     if (join && user) {
-      console.log("run join mute");
       joinDraftMutation({ draftId: draftId });
     }
   }, [join, user]);
@@ -106,7 +105,7 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
             src={
               (selectedOptionIndex != null &&
                 remainingDraftOptions[selectedOptionIndex!].imageUrl) ||
-              "placeholder.svg"
+                "placeholder.svg"
             }
             style={{
               aspectRatio: "200/200",
@@ -205,52 +204,56 @@ export default function DraftDetailPage(props: { draftId: Id<"drafts"> }) {
             </div>
           )}
           <div className="grid grid-cols-6 md:grid-cols-12 gap-2 md:w-2/3 w-full">
-            <div className="col-span-1 hidden md:block"></div>
-            {players.map((player) => (
-              <div className="rounded-lg col-span-2" key={player.id}>
-                <h2
-                  className={`text-lg mb-4 text-center ${
-                    player.id == gameState.playerTurnId &&
-                    "text-bold text-green-500"
-                  }`}
-                >
-                  {player.name}
-                </h2>
-                <div className="grid grid-cols-1 gap-2">
-                  {gameState &&
-                    gameState.picks &&
-                    gameState.picks
-                      .filter((option) => option.playerId == player.id)
-                      .map((opt) =>
-                        draftOptions.find(
-                          (draftOption) => draftOption._id == opt.option
+            {players.map((player, index) => (
+              <> 
+                {index % 4 == 0 && 
+                  <div className="col-span-2 hidden md:block"></div>}
+                <div className="rounded-lg col-span-2" key={player.id}>
+                  <h2
+                    className={`text-lg mb-4 text-center ${
+                      player.id == gameState.playerTurnId &&
+                        "text-bold text-green-500"
+                    }`}
+                  >
+                    {player.name}
+                  </h2>
+                  <div className="grid grid-cols-1 gap-2">
+                    {gameState &&
+                      gameState.picks &&
+                      gameState.picks
+                        .filter((option) => option.playerId == player.id)
+                        .map((opt) =>
+                          draftOptions.find(
+                            (draftOption) => draftOption._id == opt.option
+                          )
                         )
-                      )
-                      .map((option) => (
-                        <Card
-                          className="flex flex-col items-center p-2 bg-white rounded-xl border-8 aspect-square"
-                          key={option?.name}
-                        >
-                          <img
-                            alt="Option Image"
-                            className="w-full h-24 object-cover mb-2"
-                            height="150"
-                            src={option?.imageUrl || "placeholder.svg"}
-                            style={{
-                              aspectRatio: "150/150",
-                              objectFit: "contain",
-                            }}
-                            width="150"
-                          />
-                          <h3 className="text-lg font-bold text-black">
-                            {option?.name}
-                          </h3>
-                        </Card>
-                      ))}
+                        .map((option) => (
+                          <Card
+                            className="flex flex-col items-center p-2 bg-white rounded-xl border-8 aspect-square"
+                            key={option?.name}
+                          >
+                            <img
+                              alt="Option Image"
+                              className="w-full h-24 object-cover mb-2"
+                              height="150"
+                              src={option?.imageUrl || "placeholder.svg"}
+                              style={{
+                                aspectRatio: "150/150",
+                                objectFit: "contain",
+                              }}
+                              width="150"
+                            />
+                            <h3 className="text-lg font-bold text-black">
+                              {option?.name}
+                            </h3>
+                          </Card>
+                        ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div className="col-span-1 hidden md:block"></div>
+                {index % 4 == 3 &&
+                  <div className="col-span-1 hidden md:block"></div>
+                }
+              </>))}
           </div>
         </div>
       </div>
